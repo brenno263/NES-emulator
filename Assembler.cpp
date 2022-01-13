@@ -16,13 +16,12 @@ std::map<uint16_t, std::string> Assembler::Disassemble(Bus &bus, uint16_t start,
 	Cpu::Instruction inst;
 	uint8_t high, low = 0x00;
 
-	auto nextInstruction = [&addr, &bus]() -> Cpu::Instruction {
-		auto inst_addr = bus.read(addr);
-		return Cpu::lookup[bus.read(addr++)];
-	};
-
 	auto nextByte = [&addr, &bus]() -> uint8_t {
 		return bus.read(addr++);
+	};
+
+	auto nextInstruction = [&nextByte]() -> Cpu::Instruction {
+		return Cpu::lookup[nextByte()];
 	};
 
 	while (addr < end)
@@ -72,13 +71,17 @@ std::map<uint16_t, std::string> Assembler::Disassemble(Bus &bus, uint16_t start,
 			out += " $" + IntToHexString(high << 8 | low, 2) + ",Y {ABS}";
 		} else if (addrmode == &Cpu::IND)
 		{
-
+			low = nextByte();
+			high = nextByte();
+			out += " ($" + IntToHexString(high << 8 | low, 2) + ") {IND}";
 		} else if (addrmode == &Cpu::IZX)
 		{
-
+			low = nextByte();
+			out += " ($" + IntToHexString(low, 1) + ",X) {IZX}";
 		} else if (addrmode == &Cpu::IZY)
 		{
-
+			low = nextByte();
+			out += " ($" + IntToHexString(low, 1) + "),Y {IZY}";
 		}
 
 		lines[line_address] = out;

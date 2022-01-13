@@ -160,8 +160,8 @@ public:
 
 	/**
 	 * Indirect Y:\n
-	 * The supplied one byte address is offset by the Y register to index a location in page 0x00. The actual 16 bit
-	 * address is read from this location.
+	 * The supplied one byte address indexes a location in page 0x00. The actual 16 bit address is read from this
+	 * location then offset by Y.
 	 * @return
 	 */
 	uint8_t IZY();
