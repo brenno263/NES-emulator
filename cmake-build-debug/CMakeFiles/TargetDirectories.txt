@@ -1,3 +1,0 @@
-/home/b/Documents/pixelGameEngine/NES/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/b/Documents/pixelGameEngine/NES/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/b/Documents/pixelGameEngine/NES/cmake-build-debug/CMakeFiles/NES.dir
