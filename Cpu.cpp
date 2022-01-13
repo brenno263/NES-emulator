@@ -15,29 +15,6 @@ Cpu::~Cpu()
 
 }
 
-void Cpu::ConnectBus(Bus *b) {bus = b;}
-
-void Cpu::write(uint16_t addr, uint8_t data)
-{
-	bus->write(addr, data);
-}
-
-uint8_t Cpu::read(uint8_t addr)
-{
-	return bus->read(addr, false);
-}
-
-
-uint8_t Cpu::GetFlag(Cpu::Flag f)
-{
-	return 0;
-}
-
-void Cpu::SetFlag(Cpu::Flag f, bool v)
-{
-
-}
-
 void Cpu::clock()
 {
 	if(cycles == 0)
@@ -69,6 +46,41 @@ void Cpu::irq()
 void Cpu::nmi()
 {
 
+}
+
+bool Cpu::complete()
+{
+	return false;
+}
+
+void Cpu::ConnectBus(Bus *b)
+{
+	bus = b;
+}
+
+uint8_t Cpu::GetFlag(Cpu::Flag f)
+{
+	return (status & f) > 0;
+}
+
+void Cpu::SetFlag(Cpu::Flag f, bool v)
+{
+	if(v)
+	{
+		status |= f;
+	} else {
+		status &= ~f;
+	}
+}
+
+void Cpu::write(uint16_t addr, uint8_t data)
+{
+	bus->write(addr, data);
+}
+
+uint8_t Cpu::read(uint8_t addr)
+{
+	return bus->read(addr);
 }
 
 uint8_t Cpu::fetch()
@@ -105,7 +117,6 @@ const std::vector<Cpu::Instruction> Cpu::lookup =
 
 uint8_t Cpu::IMP()
 {
-	fetched = a;
 	return 0;
 }
 
@@ -164,7 +175,7 @@ uint8_t Cpu::IZY()
 	return 0;
 }
 
-/*===== Instruction Implementation =====*/
+/*===== Instructions =====*/
 
 uint8_t Cpu::ADC()
 {
@@ -450,3 +461,4 @@ uint8_t Cpu::XXX()
 {
 	return 0;
 }
+

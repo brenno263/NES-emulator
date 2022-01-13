@@ -17,6 +17,32 @@ public:
 	Cpu();
 	~Cpu();
 
+	// All actual 6502 registers
+	/// Accumulator
+	uint8_t a = 0x00;
+	uint8_t x = 0x00;
+	uint8_t y = 0x00;
+	/// Stack Pointer
+	uint8_t sp = 0x00;
+	///Program Counter
+	uint16_t pc = 0x0000;
+	///Status flags
+	uint8_t status;
+
+	///run a clock cycle
+	void clock();
+	///reset
+	void reset();
+	///interrupt request signal
+	void irq();
+	///non-maskable interrupt request signal
+	void nmi();
+
+	///Indicates whether the current instruction has completed
+	bool complete();
+
+	void ConnectBus(Bus *b);
+
 	enum Flag
 	{
 		C = (1 << 0), //Carry Bit			(Unimplemented)
@@ -29,38 +55,37 @@ public:
 		N = (1 << 7), // Negative			(Unimplemented)
 	};
 
-	uint8_t a = 0x00; //Accumulator
-	uint8_t x = 0x00; //X
-	uint8_t y = 0x00; //Y
-	uint8_t stkp = 0x00; //Stack Pointer
-	uint16_t pc = 0x0000; //Program Counter
-	uint8_t status; //Status flags
-
-	void ConnectBus(Bus *b);
-
-	Bus *bus = nullptr;
-
 private:
-	void write(uint16_t addr, uint8_t data);
-	uint8_t read(uint8_t addr);
 
-	// helper functions to access status register
+
+	// Helper functions to access status register
 	uint8_t GetFlag(Flag f);
 	void SetFlag(Flag f, bool v);
 
-public:
-	void clock(); //run a clock cycle
-	void reset(); //reset
-	void irq(); //interrupt request signal
-	void nmi(); //non-maskable interrupt request signal
-
-	uint8_t fetch();
+	// Assistive variables for emulation
+	/// Represents the working input value to the APU
 	uint8_t fetched = 0x00;
-
+	/// A convenience variable
+	uint16_t temp = 0x00;
+	/// Absolute memory address
 	uint16_t addr_abs = 0x0000;
+	/// Relative memory address (used by branches)
 	uint16_t addr_rel = 0x0000;
+	/// The instruction byte
 	uint8_t opcode = 0x00;
+	/// Counts how many cycles the current instruction has remaining
 	uint8_t cycles = 0;
+	/// A global counter of the number of clocks
+	uint32_t clock_count = 0;
+
+	Bus *bus = nullptr;
+	/// Write to the attached bus
+	void write(uint16_t addr, uint8_t data);
+	/// Read from the attached bus
+	uint8_t read(uint8_t addr);
+
+	/// Depending on the address mode of the instruction, fetches required data
+	uint8_t fetch();
 
 public:
 

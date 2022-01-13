@@ -17,7 +17,7 @@ std::map<uint16_t, std::string> Assembler::Disassemble(Bus &bus, uint16_t start,
 	uint8_t high, low = 0x00;
 
 	auto nextByte = [&addr, &bus]() -> uint8_t {
-		return bus.read(addr++);
+		return bus.read(addr++, true);
 	};
 
 	auto nextInstruction = [&nextByte]() -> Cpu::Instruction {
