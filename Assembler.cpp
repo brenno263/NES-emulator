@@ -37,51 +37,52 @@ std::map<uint16_t, std::string> Assembler::Disassemble(Bus &bus, uint16_t start,
 		} else if (addrmode == &Cpu::IMM)
 		{
 			low = nextByte();
-			out += " #$" + IntToHexString(low, 1) + " {IMM}";
+			out += " #$" + Hex(low) + " {IMM}";
 		} else if (addrmode == &Cpu::ZP0)
 		{
 			low = nextByte();
-			out += " $" + IntToHexString(low, 1), + " {ZP0}";
+			out += " $" + Hex(low), + " {ZP0}";
 		} else if (addrmode == &Cpu::ZPX)
 		{
 			low = nextByte();
-			out += " $" + IntToHexString(low, 1), + ",X {ZP0}";
+			out += " $" + Hex(low), + ",X {ZP0}";
 		} else if (addrmode == &Cpu::ZPY)
 		{
 			low = nextByte();
-			out += " $" + IntToHexString(low, 1), + ",Y {ZP0}";
+			out += " $" + Hex(low), + ",Y {ZP0}";
 		} else if (addrmode == &Cpu::REL)
 		{
 			low = nextByte();
-			out += " $" + IntToHexString(low, 1) + " {REL}";
+			int8_t offset = (int8_t)low;
+			out += " $" + Hex(low) + " [$" + Hex(addr + offset, 2) + "] {REL}";
 		} else if (addrmode == &Cpu::ABS)
 		{
 			low = nextByte();
 			high = nextByte();
-			out += " $" + IntToHexString(high << 8 | low, 2) + " {ABS}";
+			out += " $" + Hex(high << 8 | low, 2) + " {ABS}";
 		} else if (addrmode == &Cpu::ABX)
 		{
 			low = nextByte();
 			high = nextByte();
-			out += " $" + IntToHexString(high << 8 | low, 2) + ",X {ABS}";
+			out += " $" + Hex(high << 8 | low, 2) + ",X {ABS}";
 		} else if (addrmode == &Cpu::ABY)
 		{
 			low = nextByte();
 			high = nextByte();
-			out += " $" + IntToHexString(high << 8 | low, 2) + ",Y {ABS}";
+			out += " $" + Hex(high << 8 | low, 2) + ",Y {ABS}";
 		} else if (addrmode == &Cpu::IND)
 		{
 			low = nextByte();
 			high = nextByte();
-			out += " ($" + IntToHexString(high << 8 | low, 2) + ") {IND}";
+			out += " ($" + Hex(high << 8 | low, 2) + ") {IND}";
 		} else if (addrmode == &Cpu::IZX)
 		{
 			low = nextByte();
-			out += " ($" + IntToHexString(low, 1) + ",X) {IZX}";
+			out += " ($" + Hex(low) + ",X) {IZX}";
 		} else if (addrmode == &Cpu::IZY)
 		{
 			low = nextByte();
-			out += " ($" + IntToHexString(low, 1) + "),Y {IZY}";
+			out += " ($" + Hex(low) + "),Y {IZY}";
 		}
 
 		lines[line_address] = out;
@@ -90,13 +91,13 @@ std::map<uint16_t, std::string> Assembler::Disassemble(Bus &bus, uint16_t start,
 	return lines;
 }
 
-std::string Assembler::IntToHexString(uint32_t word, uint8_t bytes = 1)
+std::string Assembler::Hex(uint32_t decimal, uint8_t bytes)
 {
 	std::string out;
 	//iterate over 4-bit words
 	for(int i = bytes * 2 - 1; i >= 0; i--)
 	{
-		out += hexLookup[(word >> i * 4) & 0x000F];
+		out += hexLookup[(decimal >> i * 4) & 0x000F];
 	}
 
 	return out;

@@ -19,7 +19,14 @@ public:
 	static const std::string hexLookup;
 
 	static std::map<uint16_t, std::string> Disassemble(Bus &bus, uint16_t start, uint16_t end);
-	static std::string IntToHexString(uint32_t word, uint8_t bytes);
+
+	/**
+	 * Convert an integer of up to four bytes into a hex string
+	 * @param decimal decimal number to be converted
+	 * @param bytes how many bytes to convert
+	 * @return
+	 */
+	static std::string Hex(uint32_t decimal, uint8_t bytes = 1);
 };
 
 

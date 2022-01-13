@@ -43,13 +43,13 @@ int main()
 		nOffset++;
 	}
 
-	std::cout << Assembler::IntToHexString(0xABCD, 2) << std::endl;
+	std::cout << Assembler::Hex(0xABCD, 2) << std::endl;
 
 	auto map = Assembler::Disassemble(nesbus, 0x8000, 0x8020);
 
 	for(std::pair<uint16_t, std::string> pair: map)
 	{
-		std::cout << Assembler::IntToHexString(pair.first, 2) << " " << pair.second << std::endl;
+		std::cout << Assembler::Hex(pair.first, 2) << " " << pair.second << std::endl;
 	}
 
 	std::cout << "Hello, World!" << std::endl;
